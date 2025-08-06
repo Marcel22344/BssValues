@@ -1,0 +1,811 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSS Values & Market</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/static/favicons/site.webmanifest">
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="BSSMValues">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="description" content="The ultimate BSS hub for Bee Swarm Simulator players. Find accurate item values, use our online market for trading, create trade offers. Your one-stop shop for BSS values and trading.">
+    <meta name="keywords" content="BSS, Bee Swarm Simulator, BSS Values, BSS Trading, BSS trades, bsstrades, BSS Market, BSS Stickers, Bee Swarm Values, Trade Calculator, Trade offer Creator, Beequip Values, Sticker Values, Value List, BSS Value List, ">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "BSS Market",
+      "url": "https://bssmvalues.com/",
+      "about": {
+        "@type": "VideoGame",
+        "name": "Bee Swarm Simulator",
+        "gamePlatform": "Roblox"
+      },
+      "description": "The ultimate BSS hub for Bee Swarm Simulator players. Find accurate item values, use our online market for trading, create trade offers. Your one-stop shop for BSS values and trading."
+    }
+    </script>
+
+    
+    <!-- Google tag (gtag.js) -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KH5GL3353Q"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KH5GL3353Q');
+    </script>
+    
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/data-consent.css">
+    <script src="js/fuse.min.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="js/socket.io.js"></script>
+    <link rel="stylesheet" href="css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+    <div id="loadingIndicator" class="loading-indicator">
+        <div class="spinner"></div>
+    </div>
+
+    <button id="adminPanelToggle" class="admin-panel-toggle" style="display:none;">🛠️ Admin</button>
+
+    <div class="tab">
+        <div id="userProfile" class="user-profile"></div>
+        <div class="tab-buttons-wrapper">
+            <button class="tablinks active" onclick="openTab(event, 'homeScreen')">Home</button>
+            <button class="tablinks" onclick="openTab(event, 'ValueList')">Value List</button>
+            <button class="tablinks" onclick="openTab(event, 'OnlineMarket')">Online Market</button>
+            <button class="tablinks" onclick="openTab(event, 'TradeOfferCreator')">Trade Offer Creator</button>
+            <button class="tablinks" onclick="openTab(event, 'LFG')">LFG</button>
+        </div>
+        <button id="darkModeToggle">
+            <span class="moon">🌙</span>
+            <span class="sun">☀️</span>
+        </button>
+    </div>
+
+    <div id="homeScreen" class="tabcontent" style="display: block;">
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1>BSS Market</h1>
+                <p>Your ultimate resource for Bee Swarm Simulator trading and values</p>
+                <a href="#" class="cta-button" onclick="softRedirect('ValueList')">Explore Values</a>
+            </div>
+            <div class="hero-image">
+                <video autoplay="" loop="" muted="" playsinline="">
+                    <source src="media/logo.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        <div class="feature-grid">
+             <div class="feature-item" data-tab="ValueList">
+                <img src="images/4639_up_graph.png" alt="Value List Icon">
+                <h3>Accurate Value List</h3><p>Stay updated with the latest item values</p>
+            </div>
+            <div class="feature-item" data-tab="OnlineMarket">
+                <img src="images/Tarrorws2.png" alt="Trade Icon">
+                <h3>Online Market</h3><p>Find and create trade offers easily</p>
+            </div>
+            <div class="feature-item" data-tab="TradeOfferCreator">
+                <img src="images/Bee_Cub.png" alt="Market Icon">
+                <h3>Trade Offer Creator</h3><p>Create and Calculate your Trades before they even happen.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="ValueList" class="tabcontent">
+        <div id="valueListSelectionContainer" style="display: flex;">
+            <ul class="hexagons-bg"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>
+            <div id="valueListSelectionScreen">
+                <h2 class="selection-title">Choose Your Value List</h2>
+                <p class="selection-intro">Dive into the most accurate Bee Swarm Simulator values! Select a category below.</p>
+                <div class="selection-button-grid">
+                    <div class="selection-button-wrapper" onclick="showStickerValueList()">
+                        <div class="selection-button-card sticker-card"><div class="selection-card-shine"></div><img src="images/g-PXd-Fg2k-VClaw-AAAABJRU5-Erk-Jggg.png" alt="Sticker Icon" class="selection-button-image"><h3 class="selection-card-title">Sticker Values</h3><p class="selection-card-description">Market values for all collectible stickers.</p><button class="selection-button-actual">View Stickers</button></div>
+                    </div>
+                    <div class="selection-button-wrapper" onclick="showBeequipValueList()">
+                        <div class="selection-button-card beequip-card"><div class="selection-card-shine"></div><img src="images/Azm-RLq-Cv-JT7-MAAAAAEl-FTk-Su-Qm-CC.png" alt="Beequip Icon" class="selection-button-image"><h3 class="selection-card-title">Beequip Values</h3><p class="selection-card-description">Valuations for Beequips.</p><button class="selection-button-actual">View Beequips</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="stickerValueListContent" style="display: none;">
+    <button class="back-to-selection-btn" onclick="showValueListSelectionScreen()">← Back to Selection</button>
+     <div class="search-container">
+         <input type="text" id="searchBar" placeholder="Search Stickers...">
+         <div id="searchResults"></div>
+     </div>
+    <div class="subtab">
+        <button class="subtablinks" onclick="openSubTab(event, 'CubSkins')">Cub Skins</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'HiveSkins')">Hive Skins</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Vouchers')">Vouchers</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Bees')">Bees</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Bears')">Bears</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Mobs')">Mobs</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Misc')">Miscellaneous</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Art')">Art</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Gems')">Gems</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'NectarIcons')">Nectar Icons</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Flowers')">Flowers</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Mushrooms')">Mushrooms</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Leaves')">Leaves</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Tools')">Tools</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Stamps')">Stamps</button>
+        <button class="subtablinks" onclick="openSubTab(event, 'Beesmas')">Beesmas</button>
+    </div>
+
+    <div id="CubSkins" class="subtabcontent">
+        <h3>Cub Skins Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="HiveSkins" class="subtabcontent">
+        <h3>Hive Skins Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Vouchers" class="subtabcontent">
+        <h3>Voucher Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Bees" class="subtabcontent">
+        <h3>Bee Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Bears" class="subtabcontent">
+        <h3>Bear Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Mobs" class="subtabcontent">
+        <h3>Mob Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Misc" class="subtabcontent">
+        <h3>Miscellaneous Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Art" class="subtabcontent">
+        <h3>Art Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Gems" class="subtabcontent">
+        <h3>Gem Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="NectarIcons" class="subtabcontent">
+        <h3>Nectar Icon Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Flowers" class="subtabcontent">
+        <h3>Flower Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Mushrooms" class="subtabcontent">
+        <h3>Mushroom Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Leaves" class="subtabcontent">
+        <h3>Leaf Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Tools" class="subtabcontent">
+        <h3>Tool Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Stamps" class="subtabcontent">
+        <h3>Stamp Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+    <div id="Beesmas" class="subtabcontent">
+        <h3>Beesmas Value List</h3>
+        <ul class="value-list"><!-- Items will be generated here --></ul>
+    </div>
+</div>
+
+<div id="beequipValueListContent" style="display: none;">
+    <div id="beequipViewContainer">
+        <div id="beequipSelectionView">
+            <button class="back-to-selection-btn" onclick="showValueListSelectionScreen()">← Back to Categories</button>
+            <div class="selection-title-container">
+               <h2>Beequip Value List</h2>
+               <p>Select a Beequip type to see its variants and values.</p>
+            </div>
+            <!-- NEW GLOBAL SEARCH BAR -->
+            <div class="search-container" id="globalBeequipSearchContainer" style="margin-top: 0; margin-bottom: 1.5rem;">
+                <input type="text" id="globalBeequipSearchBar" placeholder="Search all beequips...">
+            </div>
+            <!-- Container for global search results -->
+            <div id="globalBeequipSearchResults" class="search-category" style="display:none; max-width: 800px; margin: 0 auto;"></div>
+            <div id="beequipSelectionGrid" class="beequip-selection-grid">
+            </div>
+       </div>
+
+       <div id="beequipVariantView" style="display: none;">
+            <button id="backToBeequipSelectionBtn" class="back-to-selection-btn">← Back to Beequips</button>
+            <h3 id="beequipVariantListTitle"></h3>
+            <div class="beequip-controls">
+                <div class="search-container">
+                   <input type="text" id="beequipSearchBar" placeholder="Search variants...">
+                </div>
+                <div class="sort-container">
+                    <label for="beequipSortBy">Sort By:</label>
+                    <select id="beequipSortBy">
+                        <option value="value_desc">Value: High to Low</option>
+                        <option value="value_asc">Value: Low to High</option>
+                        <option value="name_asc">Name: A-Z</option>
+                        <option value="name_desc">Name: Z-A</option>
+                    </select>
+                </div>
+            </div>
+            <div id="beequipSearchResultsContainer">
+                <ul id="beequipVariantList" class="value-list">
+                </ul>
+                <div id="beequipSearchResults" class="search-results-container" style="display:none;">
+                </div>
+            </div>
+       </div>
+    </div>
+</div>
+</div>
+
+<div id="OnlineMarket" class="tabcontent">
+<div id="marketLoginPrompt" class="login-prompt">
+   <h3>You need to log in to use Online Market</h3><p>Please login with Discord to access trading features</p>
+   <button onclick="redirectToDiscordLogin()" class="discord-login-button"><img src="images/636e0a6a49cf127bf92de1e2_icon_clyde_white_RGB.png" alt="Discord"> Login with Discord</button>
+</div>
+<div id="marketContent" style="display: none;">
+   <div class="subtab">
+       <button class="subtablinks" onclick="openMarketTab(event, 'BrowseListings')" id="defaultMarketTab">Browse Listings</button>
+       <button class="subtablinks" onclick="openMarketTab(event, 'MyListings')">My Listings</button>
+       <button class="subtablinks" onclick="openMarketTab(event, 'CreateListing')">Create Listing</button>
+       <button class="subtablinks" onclick="openMarketTab(event, 'Auctions')">Auctions</button>
+       <button class="subtablinks" onclick="openMarketTab(event, 'PrivateServers')">Private Servers</button>
+   </div>
+   <div id="BrowseListings" class="market-tabcontent">
+       <div class="market-filters">
+           <div class="filter-group"><label for="filterType">Listing Type:</label><select id="filterType" onchange="refreshListings()"><option value="all">All Types</option><option value="sell">Selling</option><option value="buy">Looking For</option><option value="auction">Auctions</option></select></div>
+           <div class="filter-group"><label for="filterItem">Item:</label><input type="text" id="filterItem" placeholder="Search for item..." oninput="filterListings()"></div>
+           <div class="filter-group">
+               <label for="sortListingsBy">Sort By:</label>
+               <select id="sortListingsBy" onchange="handleListingSortChange()">
+                   <option value="newest">Newest First</option>
+                   <option value="oldest">Oldest First</option>
+                   <option value="price_high_low">Price: High to Low</option>
+                   <option value="price_low_high">Price: Low to High</option>
+                   <option value="name_az">Item Name A-Z</option>
+                   <option value="name_za">Item Name Z-A</option>
+               </select>
+           </div>
+           <button onclick="refreshListings()" class="refresh-button">↻ Refresh</button>
+       </div>
+       <div class="listings-container" id="listingsContainer"><div class="empty-state"><img src="images/Bee_Cub.png" alt="Empty state"><p>Loading listings...</p></div></div>
+   </div>
+   <div id="MyListings" class="market-tabcontent">
+       <h3>Your Active Listings</h3><div id="activeListingsContainer"><div class="empty-state"><img src="images/Bee_Cub.png" alt="Empty state"><p>You have no active listings</p></div></div>
+       <h3>Your Completed/Expired Listings</h3><div id="completedListingsContainer"><div class="empty-state"><img src="images/Brown_Cub.png" alt="Empty state"><p>You have no completed listings</p></div></div>
+   </div>
+   <div id="CreateListing" class="market-tabcontent">
+       <div class="create-listing-form">
+           <h3>Create New Listing</h3>
+           <div class="form-group"><label for="listingType">Listing Type:</label><select id="listingType" onchange="toggleListingFields()"><option value="sell">I want to Sell</option><option value="buy">I'm Looking For</option><option value="auction">Auction</option></select></div>
+           <div class="form-group"><label for="itemsList">Items:</label><textarea id="itemsList" placeholder="List the items..." maxlength="100"></textarea><p class="form-hint">Separate multiple items with commas</p></div>
+
+           <div class="form-group">
+               <label for="listingImage">Upload Image (Optional):</label>
+               <input type="file" id="listingImage" accept="image/*">
+               <p class="form-hint">Max 2MB. Recommended: PNG, JPG, GIF.</p>
+           </div>
+
+           <div class="form-group" id="priceGroup"><label for="price">Price (in Signs, optional for Sell):</label><input type="number" id="price" placeholder="Price"></div>
+           <div class="form-group" id="startingBidGroup" style="display: none;"><label for="startingBid">Starting Bid (in Signs):</label><input type="number" id="startingBid" placeholder="Starting bid"></div>
+           <div class="form-group" id="auctionDurationGroup" style="display: none;"><label>Auction Duration:</label><div class="duration-inputs"><div><input type="number" id="auctionDays" placeholder="Days" min="0" max="30" value="3"><label for="auctionDays">Days</label></div><div><input type="number" id="auctionHours" placeholder="Hours" min="0" max="23" value="0"><label for="auctionHours">Hours</label></div><div><input type="number" id="auctionMinutes" placeholder="Minutes" min="0" max="59" value="0"><label for="auctionMinutes">Minutes</label></div></div><p class="form-hint">Min 5 mins, Max 30 days</p></div>
+           <div class="form-group" id="lookingForGroup"><label for="lookingFor">Looking For (optional):</label><textarea id="lookingFor" placeholder="What you'd accept in return..." maxlength="100"></textarea><p class="form-hint">Leave blank if only accepting signs</p></div>
+           <button onclick="createListing()" class="create-button">Create Listing</button><div id="createListingMessage" class="message-box"></div>
+       </div>
+   </div>
+   <div id="Auctions" class="market-tabcontent">
+       <h3>Active Auctions</h3>
+       <div class="auction-filter market-filters">
+           <div class="filter-group"><label for="auctionSearch">Search Auctions:</label><input type="text" id="auctionSearch" placeholder="Search auctions..." oninput="filterAuctions()"></div>
+           <div class="filter-group">
+               <label for="sortAuctionsBy">Sort By:</label>
+               <select id="sortAuctionsBy" onchange="handleAuctionSortChange()">
+                   <option value="ends_soon">Ending Soonest</option>
+                   <option value="newest">Newest Created</option>
+                   <option value="bid_high_low">Bid: High to Low</option>
+                   <option value="bid_low_high">Bid: Low to High</option>
+                   <option value="oldest">Oldest Created</option>
+                   <option value="name_az">Item Name A-Z</option>
+                   <option value="name_za">Item Name Z-A</option>
+               </select>
+           </div>
+           <button onclick="refreshAuctions()" class="refresh-button">↻ Refresh</button>
+        </div>
+       <div class="auctions-container" id="auctionsContainer"><div class="empty-state"><img src="images/Peppermint_Robo_Cub.png" alt="Auction"><p>Loading auctions...</p></div></div>
+   </div>
+    <div id="PrivateServers" class="market-tabcontent">
+        <h3>Available Trading Servers</h3>
+        <p>Join one of these private servers to complete your trades safely.</p>
+        <div style="background-color: rgba(231, 76, 60, 0.1); border-left: 4px solid #e74c3c; padding: 10px 15px; margin: 15px 0; border-radius: 4px;">
+            <strong style="color: #c0392b;">Important Note:</strong> Using macros in these private servers is strictly prohibited and will result in a permanent ban from all our services.
+        </div>
+        <button onclick="refreshServers()" class="refresh-button" style="margin-bottom: 1.2rem;">↻ Refresh Server List</button>
+        <div class="servers-container" id="serversContainer"><div class="empty-state"><img src="images/Robo_Cub.png" alt="Server"><p>Loading servers...</p></div></div>
+    </div>
+</div>
+</div>
+
+<div id="TradeOfferCreator" class="tabcontent">
+    <div class="trade-offer-title-bar">
+        <h2>Trade Offer Calculator</h2>
+        <p class="trade-offer-subtitle">Craft & Analyze Your Bee Swarm Simulator Trades</p>
+    </div>
+
+    <div class="trade-actions-bar">
+        <button id="btnOpenSaveOfferModal" class="action-button save-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"></path></svg>
+            Save Offer
+        </button>
+        <button id="btnOpenLoadOfferModal" class="action-button load-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M19.99 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-1.99-2zM9 19H5V5h4v14zm2 0h4V5h-4v14zm6 0h-4V5h4v14z"></path></svg>
+            Load Offer
+        </button>
+        <button id="btnClearTradeOffer" class="action-button clear-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path></svg>
+            Clear Offer
+        </button>
+    </div>
+
+    <div class="trade-offer-layout-container">
+        <div id="main-offer-your" class="trade-offer-section your-offer-section">
+            <h3><span class="offer-icon">🎁</span> Offering</h3>
+            <div id="offer-your" class="trade-items-container">
+                <!-- Removed Add Item button from here -->
+            </div>
+            <div class="trade-total-display">
+                <button id="btn-add-your" class="trade-add-item-button-new" title="Add item to your offer">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg>
+                </button>
+                <span class="custom-value-indicator" style="display: none;">⚠️Value has been self chosen⚠️</span>
+                <span class="total-value-text-group">
+                    Total Value: <span id="result-yourtotal" class="trade-total-value">0.00</span> Signs
+                </span>
+            </div>
+        </div>
+
+        <div class="trade-visual-separator-pro">
+            <div class="separator-logo-container">
+                <img src="images/bssai.png" alt="BSS AI Logo" class="separator-logo bssai-logo">
+                <span class="separator-logo-plus">+</span>
+                <img src="images/bssmarket.png" alt="The Market Logo" class="separator-logo market-logo">
+            </div>
+            <div class="separator-line"></div>
+            <h4 class="separator-title">BSSMVALUES.COM</h4>
+            <p class="separator-credits">
+                Created by <span class="creator-name">Slymi</span> & <span class="creator-name">GUI</span>
+            </p>
+        </div>
+
+        <div id="main-offer-their" class="trade-offer-section their-offer-section">
+            <h3><span class="offer-icon">🛍️</span> Looking For</h3>
+            <div id="offer-their" class="trade-items-container">
+                <!-- Removed Add Item button from here -->
+            </div>
+            <div class="trade-total-display">
+                <button id="btn-add-their" class="trade-add-item-button-new" title="Add item to their offer">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></svg>
+                </button>
+                <span class="custom-value-indicator" style="display: none;">Self-Inputted Value Included</span>
+                <span class="total-value-text-group">
+                    Total Value: <span id="result-theirtotal" class="trade-total-value">0.00</span> Signs
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div id="result" class="trade-result-section">
+        <h3><span class="result-icon">⚖️</span> Trade Analysis</h3>
+        <div class="result-details">
+            <p class="result-detail-item">
+                <span class="result-label">Difference:</span>
+                <span id="result-difference" class="trade-result-value">0.00 (100%)</span>
+            </p>
+            <p class="result-detail-item">
+                <span class="result-label">W/L Status:</span>
+                <span id="result-wl" class="trade-result-status">Fair</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="trade-notes-section">
+        <h4>Important Notes:</h4>
+        <ul>
+            <li><span class="note-bullet">⚠️</span> This calculator is in BETA and may not be 100% accurate.</li>
+            <li><span class="note-bullet">📊</span> Values used are based on the average from the value list.</li>
+            <li><span class="note-bullet">📈</span> Item demand is not yet factored into calculations.</li>
+        </ul>
+    </div>
+
+    <!-- Save/Load Modal for Trade Offers -->
+    <div id="tradeOfferSaveLoadModal" class="modal" style="display: none;">
+        <div class="modal-content trade-offer-save-load-modal-content">
+            <button id="closeTradeOfferSaveLoadModal" class="close" onclick="closeTradeOfferSaveLoadModal()">
+                <img class="icons" src="images/Hivesticker_red_x.png" alt="Close" onerror="this.style.display='none'; const txt = document.createElement('span'); txt.textContent='X'; this.parentNode.insertBefore(txt, this);">
+            </button>
+            <h3 id="tradeOfferSaveLoadModalTitle">Manage Saved Offers</h3>
+            <div id="tradeOfferSaveLoadSlotsContainer" class="slots-container">
+                <!-- Slots will be dynamically generated here by script.js -->
+            </div>
+            <div id="tradeOfferSaveNameInputContainer" class="form-group" style="display: none; margin-top: 15px;">
+                <label for="tradeOfferSaveName">Offer Name (Optional):</label>
+                <input type="text" id="tradeOfferSaveName" placeholder="e.g., My Awesome Trade" maxlength="50">
+            </div>
+            <div id="tradeOfferSaveLoadMessage" class="message-box" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="LFG" class="tabcontent">
+    <div class="coming-soon-container">
+        <h1 class="coming-soon-text">Coming Soon</h1>
+    </div>
+</div>
+
+<div id="beequip-modal" class="beequips-form" style="display: none;">
+
+    <div class="modal-content">
+        <button id="close-beequip-modal" class="close-button"><img class="icons" src="images/Hivesticker_red_x.png" alt="Close" onerror="this.style.display='none'; const txt = document.createElement('span'); txt.textContent='X'; this.parentNode.insertBefore(txt, this);"></button>
+        <h2>Customize Beequip <img class="icons" src="images/beequip-box.webp" alt="Beequip Box" onerror="this.style.display='none';"></h2>
+        <h3>Beequip: <p id="beequip-name-modal-title" style="display: inline; color: var(--primary-color);"></p></h3>
+        
+        <h3>Stats</h3>
+        <div id="stats-section-modal">
+        </div>
+
+        <h3>Potential <img class="icons" src="images/WinkPotential.png" alt="Potential" onerror="this.style.display='none';"></h3>
+        <div id="stars-rating-modal" class="stars-rating-modal"></div>
+        <h3>Waxes Used: <span id="wax-count-modal">0</span>/5</h3>
+        <div id="wax-slots-modal" class="wax-slots-modal">
+        </div>
+
+        <div id="wax-selection-modal" class="wax-selection-modal">
+            <img src="images/SoftWax.webp" alt="Soft Wax" data-wax-type="Soft Wax" class="wax-option-modal" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div class=wax-placeholder-modal>Soft</div>');">
+            <img src="images/HardWax.webp" alt="Hard Wax" data-wax-type="Hard Wax" class="wax-option-modal" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div class=wax-placeholder-modal>Hard</div>');">
+            <img src="images/CausticWax.webp" alt="Caustic Wax" data-wax-type="Caustic Wax" class="wax-option-modal" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div class=wax-placeholder-modal>Caustic</div>');">
+            <img src="images/SwirledWax.webp" alt="Swirled Wax" data-wax-type="Swirled Wax" class="wax-option-modal" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div class=wax-placeholder-modal>Swirled</div>');">
+        </div>
+        
+        <div class="custom-value-inputs-container" style="display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; margin-bottom: 10px;">
+            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label for="customBeequipValueMin" style="display:block; font-size:0.85em; margin-bottom:3px;">Min Value (Signs):</label>
+                <input type="number" id="customBeequipValueMin" value="0" min="0" style="width: 100%; padding: 7px; text-align: center; box-sizing: border-box;">
+            </div>
+            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                <label for="customBeequipValueMax" style="display:block; font-size:0.85em; margin-bottom:3px;">Max Value (Signs):</label>
+                <input type="number" id="customBeequipValueMax" value="0" min="0" style="width: 100%; padding: 7px; text-align: center; box-sizing: border-box;">
+            </div>
+        </div>
+        <p class="form-hint" style="font-size: 0.8em; color: var(--accent-color); text-align: center; margin-bottom: 15px;">
+            Warning: Intentionally misrepresenting values can result in account termination.
+        </p>
+
+        <button id="confirm-beequip-modal" class="confirm-button"><img class="icons" src="images/Hivesticker_green_check_mark.png" alt="Confirm" onerror="this.style.display='none'; this.textContent='Confirm';"> Confirm Customization</button>
+    </div>
+</div>
+<div id="itemModal" class="modal"><div class="modal-content"><button class="close" onclick="closeItemModal()"><img src="images/Hivesticker_red_x.png" alt="Close" onerror="this.style.display='none'; this.textContent='X';"></button><div style="display: flex; align-items: center; margin-bottom: 15px;"><img src="" alt="Item Image" id="modalItemImage" style="max-width: 80px; max-height: 80px; margin-right: 15px; border-radius: 5px; object-fit: contain;"><h2 id="modalTitle">Item Name</h2></div><p>Value: <strong><span id="modalCurrentValue">N/A</span> Signs</strong></p><p id="modalCategory">Category: N/A</p><canvas id="priceChart"></canvas></div></div><div id="bidModal" class="modal"><div class="modal-content"><span class="close" onclick="closeBidModal()">×</span><h2>Place Bid</h2><div id="bidItemDetails"></div><div class="form-group"><label for="bidAmount">Your Bid (Signs):</label><input type="number" id="bidAmount" placeholder="Bid amount"><p id="minBidMessage" class="form-hint"></p></div><button onclick="submitBid()" class="bid-button">Place Bid</button><div id="bidMessage" class="message-box"></div></div></div>
+<div id="listingModal" class="modal"><div class="modal-content listing-modal-content"><span class="close" onclick="closeListingModal()">×</span><div id="listingDetails"></div></div></div>
+<div id="reportModal" class="modal"><div class="modal-content"><span class="close" onclick="closeReportModal()">×</span><h2>Report Listing</h2><p>Reason for reporting:</p><div class="form-group"><textarea id="reportReason" placeholder="Enter reason..." rows="4"></textarea></div><button onclick="submitReport()" class="report-submit-button">Submit Report</button><div id="reportMessage" class="message-box"></div></div></div>
+<div id="auctionOutcomeModal" class="modal" style="display:none;">
+    <div class="modal-content auction-outcome-content">
+        <span class="close" onclick="closeAuctionOutcomeModal()">×</span>
+        <h2 id="auctionOutcomeTitle">Auction Ended: [Item Name]</h2>
+        <div id="auctionOutcomeBidders">
+        </div>
+        <div id="auctionOutcomeActions" class="listing-actions" style="margin-top: 15px;">
+        </div>
+    </div>
+</div>
+<div id="imageZoomModal" class="modal">
+    <div class="modal-content image-zoom-modal-content">
+        <span class="close" onclick="closeImageModal()">×</span>
+        <img id="zoomedImage" src="" alt="Zoomed Image">
+    </div>
+</div>
+
+<div id="robloxVerificationOverlay" class="modal" style="display:none;">
+    <div id="robloxVerificationModal" class="modal-content">
+        <h2 id="robloxVerificationTitle">Verify Your Roblox Account</h2>
+        <p id="robloxVerificationInstructions">To access all features, please link your Roblox account.</p>
+        <div id="robloxUsernameEntry" class="form-group">
+            <label for="robloxUsernameInput">Enter your Roblox Username:</label>
+            <input type="text" id="robloxUsernameInput" placeholder="YourRobloxUsername">
+            <button onclick="requestRobloxCode()" id="requestRobloxCodeButton" class="admin-save-button" style="margin-top:10px;">Get Verification Code</button>
+        </div>
+        <div id="robloxCodeDisplay" style="display:none; margin-top:15px;">
+            <p>1. Copy this code: <strong id="verificationCodeElement" style="user-select:all; background-color: #eee; padding: 2px 5px; border-radius:3px; color: #333;"></strong></p>
+            <p>2. Go to your <a href="https://www.roblox.com/my/profile" target="_blank" rel="noopener noreferrer">Roblox Profile</a>.</p>
+            <p>3. Paste the code into your "About" section (description/bio).</p>
+            <p>4. Click "Check Verification" below.</p>
+            <button onclick="checkRobloxVerification()" class="admin-save-button" style="margin-top:10px; background-color: var(--primary-color);">Check Verification</button>
+        </div>
+        <div id="robloxVerificationMessage" class="message-box" style="margin-top:15px;"></div>
+    </div>
+</div>
+
+<div id="banOverlay" class="modal">
+    <div class="modal-content">
+        <h2>🚫 Account Restricted 🚫</h2>
+        <p>Your access to this service has been restricted.</p>
+        <p id="banReason"></p>
+        <p>If you believe this is a mistake, please contact support through appropriate channels.</p>
+        <button onclick="logout()" class="cta-button">Logout</button>
+    </div>
+</div>
+
+<div id="adminPanelContainer" class="admin-panel-container" style="display:none;">
+<div class="admin-panel-content">
+   <button class="close-admin-panel" onclick="closeAdminPanel()">×</button>
+   <h3>Admin Dashboard</h3>
+   <div class="admin-tabs">
+       <button class="admin-tab-btn active" onclick="openAdminPanelTab(event, 'AdminManageItems')" data-tab="AdminManageItems">Manage Items</button>
+       <button class="admin-tab-btn" onclick="openAdminPanelTab(event, 'AdminManageMarketServers')" data-tab="AdminManageMarketServers">Manage Servers</button>
+       <button class="admin-tab-btn" onclick="openAdminPanelTab(event, 'AdminViewReports')" data-tab="AdminViewReports">View Reports</button>
+       <button class="admin-tab-btn" onclick="openAdminPanelTab(event, 'AdminViewLogs')" data-tab="AdminViewLogs">Action Logs</button>
+       <button class="admin-tab-btn" onclick="openAdminPanelTab(event, 'AdminManageBans')" data-tab="AdminManageBans">Ban/Unban User</button>
+       <button class="admin-tab-btn" onclick="openAdminPanelTab(event, 'AdminViewBans')" data-tab="AdminViewBans">View Bans</button>
+       <button class="admin-tab-btn" onclick="openAdminPanelTab(event, 'AdminManageGiveaways')" data-tab="AdminManageGiveaways">Manage Giveaways</button>
+   </div>
+    <div id="AdminManageItems" class="admin-panel-tabcontent" style="display:block;">
+        <div id="adminBeequipDashboard">
+            <!-- The new Beequip Management UI will be rendered here by script.js -->
+            <p>Loading Beequip Management Dashboard...</p>
+        </div>
+    </div>
+   <div id="AdminManageMarketServers" class="admin-panel-tabcontent">
+        <h4>Manage Trading Servers</h4>
+        <div class="add-server-form"><h5>Add New Server</h5><div class="form-group"><label for="newServerName">Server Name:</label><input type="text" id="newServerName" placeholder="e.g., Admin Server 1"></div><div class="form-group"><label for="newServerUrl">Server URL:</label><input type="text" id="newServerUrl" placeholder="roblox://..."></div><div class="form-group"><label for="newServerStatus">Initial Status:</label><input type="text" id="newServerStatus" value="0/6 players" placeholder="e.g. 0/6 players"></div><button onclick="addAdminServer()" class="admin-action-button">Add Server</button><div id="addServerMessage" class="message-box"></div></div>
+        <div class="server-management"><h5>Existing Servers</h5><button onclick="refreshAdminServers()" class="refresh-button">↻ Refresh Servers</button><div id="adminServersManageContainer" class="admin-servers-list"><div class="empty-state"><p>No servers found or loading...</p></div></div></div>
+   </div>
+   <div id="AdminViewReports" class="admin-panel-tabcontent">
+        <h4>Reported Listings</h4><button onclick="refreshReports()" class="refresh-button">↻ Refresh Reports</button><div id="reportsAdminContainer" class="reports-list"><div class="empty-state"><p>No reported listings found or loading...</p></div></div>
+   </div>
+   <div id="AdminViewLogs" class="admin-panel-tabcontent">
+        <h4>Admin Action Logs</h4><div id="adminLogsContent">Loading logs...</div>
+   </div>
+    <div id="AdminManageBans" class="admin-panel-tabcontent">
+        <h4>Ban/Unban User</h4>
+        <div class="admin-form-section ban-user-form">
+            <h5>Ban User</h5>
+            <div class="form-group">
+                <label for="banIdentifier">User Identifier (Discord ID or Roblox ID/Username):</label>
+                <input type="text" id="banIdentifier" placeholder="e.g., 123456789012345678 or RobloxUsername">
+            </div>
+            <div class="form-group">
+                <label for="banIdType">Identifier Type:</label>
+                <select id="banIdType">
+                    <option value="discord">Discord ID</option>
+                    <option value="roblox">Roblox ID/Username</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="banReasonAdmin">Reason for Ban:</label>
+                <textarea id="banReasonAdmin" placeholder="Enter reason for ban..." rows="3"></textarea>
+            </div>
+            <button onclick="adminBanUserFromPanel()" class="admin-action-button" style="background-color: var(--accent-color);">Ban User</button>
+            <div id="adminBanMessage" class="message-box"></div>
+        </div>
+
+        <div class="admin-form-section unban-user-form">
+            <h5>Unban User</h5>
+            <div class="form-group">
+                <label for="unbanIdentifier">User Identifier (Discord ID or Roblox ID/Username):</label>
+                <input type="text" id="unbanIdentifier" placeholder="e.g., 123456789012345678 or RobloxUsername">
+            </div>
+             <div class="form-group">
+                <label for="unbanIdType">Identifier Type:</label>
+                <select id="unbanIdType">
+                    <option value="discord">Discord ID</option>
+                    <option value="roblox">Roblox ID/Username</option>
+                </select>
+            </div>
+            <button onclick="adminUnbanUserFromPanel()" class="admin-action-button" style="background-color: var(--secondary-color);">Unban User</button>
+            <div id="adminUnbanMessage" class="message-box"></div>
+        </div>
+    </div>
+    <div id="AdminViewBans" class="admin-panel-tabcontent">
+        <h4>Current Bans</h4>
+        <button onclick="populateAdminBansTab()" class="refresh-button">↻ Refresh Bans</button>
+        <div id="adminBansList" class="admin-items-list" style="margin-top: 1rem;">Loading...</div>
+    </div>
+    <div id="AdminManageGiveaways" class="admin-panel-tabcontent">
+        <h4>Manage Giveaways</h4>
+        <div class="admin-form-section add-giveaway-form">
+            <h5>Create New Giveaway</h5>
+            <div class="form-group"><label for="newGiveawayTitle">Title:</label><input type="text" id="newGiveawayTitle" placeholder="e.g., 1M Honey Giveaway!"></div>
+            <div class="form-group"><label for="newGiveawayDescription">Description:</label><textarea id="newGiveawayDescription" placeholder="Enter details..." rows="3"></textarea></div>
+            <div class="form-group"><label for="newGiveawayImage">Image URL (Optional):</label><input type="text" id="newGiveawayImage" placeholder="https://..."></div>
+            <div class="form-group"><label for="newGiveawayLink">Discord Invite/Message Link:</label><input type="text" id="newGiveawayLink" placeholder="https://discord.gg/..."></div>
+            <div class="form-group"><label for="newGiveawayDuration">Duration (in hours):</label><input type="number" id="newGiveawayDuration" value="24" min="1" step="1"></div>
+            <button onclick="adminCreateGiveaway()" class="admin-action-button">Create Giveaway</button>
+            <div id="createGiveawayMessage" class="message-box"></div>
+        </div>
+        <h5>Active & Recent Giveaways</h5>
+        <button onclick="populateAdminGiveawaysTab()" class="refresh-button">↻ Refresh Giveaways</button>
+        <div id="adminGiveawaysList" class="admin-items-list" style="margin-top: 1rem;">Loading...</div>
+    </div>
+</div>
+</div>
+
+<div id="tradeOfferItemSelectionModal" class="modal sticker-selection-menu" style="display: none;">
+    <div id="tradeOfferItemSelectionOverlay" class="modal-overlay"></div>
+    <div id="tradeOfferItemSelectionContent" class="modal-content">
+        <h3>Select an Item...</h3>
+        <button id="tradeOfferItemSelectionCloseBtn" class="close"><img class="icons" src="images/Hivesticker_red_x.png" alt="Close" onerror="this.style.display='none'; const txt = document.createElement('span'); txt.textContent='X'; this.parentNode.insertBefore(txt, this);"></button>
+        
+        <div id="tradeOfferItemCategorySelection" class="category-selection-bar">
+            <button class="category-btn active" data-category="sticker">Stickers</button>
+            <button class="category-btn" data-category="beequip">Beequips</button>
+            <button class="category-btn" data-category="icon">Icons</button>
+        </div>
+
+        <div class="search-container" style="margin-bottom: 10px;">
+            <input type="text" id="tradeOfferItemSearch" placeholder="Search items..." style="width: 100%;">
+        </div>
+        <div id="tradeOfferItemSelectionList">
+            <p class="loading-text">Select a category above to see items.</p>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+             <label for="tradeOfferItemQuantity" style="display:block; margin-bottom:5px;">Quantity:</label>
+             <input type="number" id="tradeOfferItemQuantity" value="1" min="1" max="512" style="width: 80px; padding: 8px; text-align: center;">
+        </div>
+        <button id="tradeOfferItemSelectionConfirmBtn" class="confirm-button">Confirm</button>
+    </div>
+</div>
+
+<div id="mobileBottomBar" class="mobile-bottom-bar">
+</div>
+
+<div id="chatContainer" class="chat-container">
+    <button id="chatLauncher" class="chat-launcher">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"></path></svg>
+        <span class="chat-unread-badge" style="display: none;">0</span>
+    </button>
+    <div id="chatPanel" class="chat-panel">
+        <div class="chat-panel-header">
+            <h3>Conversations</h3>
+            <button class="chat-panel-close-btn" onclick="toggleChatPanel()">×</button>
+        </div>
+        <div class="chat-panel-search">
+            <input type="text" id="chatContactSearch" placeholder="Search users by Discord/Roblox name or ID...">
+        </div>
+        <div id="chatList" class="chat-list">
+        </div>
+    </div>
+    <div id="chatWindowsContainer" class="chat-windows-container">
+    </div>
+</div>
+
+<footer class="footer-container">
+    <div class="footer-content">
+    <div class="footer-links">
+        <h3>Community Links</h3>
+        <ul>
+            <li>
+                <a href="https://discord.gg/7wTpN2ytRK" target="_blank" rel="noopener noreferrer" class="footer-discord-link">
+                    <img src="images/bssai.png" alt="BSSAI Discord Icon" class="discord-link-icon">
+                    BSSAI Discord
+                </a>
+            </li>
+            <li>
+                <a href="https://discord.gg/GGkE6dTb2C" target="_blank" rel="noopener noreferrer" class="footer-discord-link">
+                    <img src="images/bssmarket.png" alt="The Market Discord Icon" class="discord-link-icon">
+                    The Market Discord
+                </a>
+            </li>
+            <li>
+                <a href="https://discord.gg/Jr6VtnXZ" target="_blank" rel="noopener noreferrer" class="footer-discord-link">
+                    <img src="images/beecommunity.png" alt="Bee Community Discord Icon" class="discord-link-icon">
+                    Bee Community
+                </a>
+            </li>
+            <li>
+                <a href="https://discord.gg/jRBZ4HScum" target="_blank" rel="noopener noreferrer" class="footer-discord-link">
+                    <img src="images/metabee.png" alt="Meta Bee Discord Icon" class="discord-link-icon">
+                    Meta Bee
+                </a>
+            </li>
+            <li>
+                <a href="https://discord.gg/pTmhJTVask" target="_blank" rel="noopener noreferrer" class="footer-discord-link">
+                    <img src="images/existance.png" alt="Existance Macro Discord Icon" class="discord-link-icon">
+                    Existance Macro
+                </a>
+            </li>
+        </ul>
+        </div>
+        <div class="footer-links">
+            <h3>Legal</h3>
+            <ul>
+                <li><a href="/TermsOfService" class="footer-link">Terms of Service</a></li>
+                <li><a href="/PrivacyPolicy" class="footer-link">Privacy Policy</a></li>
+                <li><a href="/credits" class="footer-link">Credits</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© <span id="currentYearFooter">2025</span> BSS Market. All rights reserved. Not affiliated with Bee Swarm Simulator or its creators.</p>
+    </div>
+</footer>
+
+<div id="discord-join-popup" class="modal" style="display: none;">
+    <div class="modal-content discord-popup-content">
+        <span class="close" id="close-discord-popup">×</span>
+        <div class="discord-popup-main-header">
+            <h2>Become Part of the Community!</h2>
+            <p>You're missing out! Join our Discord servers to unlock the full potential of your trading journey.</p>
+        </div>
+        <div class="discord-cards-container">
+            <!-- BSSAI Card -->
+            <div class="discord-card bssai-card">
+                <div class="discord-card-header">
+                    <img src="images/bssai.png" alt="BSSAI Logo" class="discord-card-logo">
+                    <h4 class="discord-card-name">BSSAI</h4>
+                </div>
+                <p class="discord-card-description">A new and upcoming macro powered by cutting-edge AI technology.</p>
+                <a href="https://discord.gg/7wTpN2ytRK" target="_blank" rel="noopener noreferrer" class="discord-card-join-button">
+                    Join Server <i class="fab fa-discord"></i>
+                </a>
+            </div>
+            <!-- The Market Card -->
+            <div class="discord-card market-card">
+                <div class="discord-card-header">
+                    <img src="images/bssmarket.png" alt="The Market Logo" class="discord-card-logo">
+                    <h4 class="discord-card-name">The Market</h4>
+                </div>
+                <p class="discord-card-description">Join our server for giveaways, valuable trading advice, and much more.</p>
+                <a href="https://discord.gg/GGkE6dTb2C" target="_blank" rel="noopener noreferrer" class="discord-card-join-button">
+                    Join Server <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Data Collection Consent Popup -->
+<div id="data-consent-popup" class="data-consent-popup">
+    <h3>Data Collection Notice</h3>
+    <p>We use cookies and collect some data to improve your experience on our website. This helps us provide better services and understand how our site is being used.</p>
+    <div class="data-consent-buttons">
+        <button id="accept-consent" class="data-consent-button accept-button">Accept</button>
+        <button id="decline-consent" class="data-consent-button decline-button">Decline</button>
+    </div>
+</div>
+
+<!-- Giveaway Popup -->
+<div id="giveaway-popup" class="modal" style="display: none;">
+    <div class="modal-content giveaway-popup-content">
+        <span class="close" onclick="closeGiveawayPopup()">×</span>
+        <div id="giveaway-popup-body">
+            <!-- New Header -->
+            <div class="giveaway-popup-header">
+                <h2>🎉 Giveaway Alert! 🎉</h2>
+            </div>
+            <img id="giveaway-popup-image" src="" alt="Giveaway Image" style="display: none;">
+            <h3 id="giveaway-popup-title"></h3>
+            <p id="giveaway-popup-description"></p>
+            <a id="giveaway-popup-link" href="#" target="_blank" rel="noopener noreferrer" class="cta-button">Join Giveaway</a>
+        </div>
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+<script src="js/data-consent.js"></script>
+
+</body></html>
